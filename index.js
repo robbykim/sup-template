@@ -1,7 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var User = require('./models/user'); // the MODEL
+var User = require('./models/user'); // the USER MODEL
+var Message = require('./models/message'); // the MESSAGE MODEL
 
 var app = express();
 
@@ -121,8 +122,13 @@ app.delete('/users/:userId', function (req, res) {
 
 /*------------------ MESSAGING ------------------*/
 
-app.get('/messages', function () {
-
+app.get('/messages', function (req, res) {
+  Message.find(function (err, messages) {
+    if (err) {
+      return res.status(400).json(err);
+    }
+    res.status(200).json([]);
+  });
 });
 
 
