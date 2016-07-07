@@ -132,12 +132,35 @@ app.get( '/messages', function( req, res ) {
 } );
 
 app.post( '/messages', jsonParser, function( req, res ) {
-  Message.create( req.body, function( err, message ) {
-    if ( !message ) {
+  if ( !req.body.text ) {
+    return res.status( 422 ).json( {
+      message: 'Missing field: text'
+    } );
+  }
+  if ( typeof( req.body.text ) !== 'string' ) {
+    return res.status( 422 ).json( {
+      message: 'Incorrect field type: text'
+    } );
+  }
+  if ( typeof( req.body.to ) !== 'string' ) {
+    return res.status( 422 ).json( {
+      message: 'Incorrect field type: to'
+    } );
+  }
+  if ( typeof( req.body.from ) !== 'string' ) {
+    return res.status( 422 ).json( {
+      message: 'Incorrect field type: from'
+    } );
+  }
+  User.findById( req.body.from, function( err, user ) {
+    if ( !user ) {
       return res.status( 422 ).json( {
-        message: 'Missing field: text'
+        message: 'Incorrect field value: from'
       } );
     }
+  } );
+
+  Message.create( req.body, function( err, message ) {
     if ( err ) {
       return res.status( 400 ).json( err );
     }
