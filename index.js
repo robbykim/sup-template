@@ -158,13 +158,19 @@ app.post( '/messages', jsonParser, function( req, res ) {
         message: 'Incorrect field value: from'
       } );
     }
-  } );
-
-  Message.create( req.body, function( err, message ) {
-    if ( err ) {
-      return res.status( 400 ).json( err );
-    }
-    res.header( 'location', '/messages/' + message._id ).status( 201 ).json( {} );
+    User.findById( req.body.to, function( err, user ) {
+      if ( !user ) {
+        return res.status( 422 ).json( {
+          message: 'Incorrect field value: to'
+        } );
+      }
+      Message.create( req.body, function( err, message ) {
+        if ( err ) {
+          return res.status( 400 ).json( err );
+        }
+        res.header( 'location', '/messages/' + message._id ).status( 201 ).json( {} );
+      } );
+    } );
   } );
 } );
 
