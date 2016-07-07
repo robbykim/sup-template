@@ -123,11 +123,11 @@ app.delete('/users/:userId', function (req, res) {
 /*------------------ MESSAGING ------------------*/
 
 app.get('/messages', function (req, res) {
-  Message.find(function (err, messages) {
+  Message.find(req.query).populate('from to').exec(function (err, messages) {
     if (err) {
       return res.status(400).json(err);
     }
-    res.status(200).json([]);
+    res.status(200).json(messages);
   });
 });
 
